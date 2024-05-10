@@ -1,16 +1,13 @@
-//import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 // ignore_for_file: duplicate_import
 
 import 'package:flutter/material.dart';
-//import 'package:tasheh/screens/profile_screen.dart';
-//import 'package:tasheh/screens/reset_password.dart';
+import 'package:tasheh/screens/events_page.dart';
+import 'package:tasheh/screens/reset_password.dart';
 import 'package:tasheh/screens/signup_screen.dart';
-import 'package:tasheh/screens/home_screen.dart';
 
 import '../reusable_widgets/reusable_widget.dart';
 import '../utils/color_utils.dart';
-import 'home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -58,18 +55,16 @@ class _SignInScreenState extends State<SignInScreen> {
                   context,
                   "Sign In",
                   () {
-                    /*FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text)
-                      .then((value) {
-                    Navigator.push(context,
-                        MaterialPageRoute(
-                            builder: (context) => profile_screen()));
-                  }).onError((error, stackTrace) {
-                    print("Error ${error.toString()}");
-
-                  });*/
+                    FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: _emailTextController.text,
+                            password: _passwordTextController.text)
+                        .then((value) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => EventPage()));
+                    }).onError((error, stackTrace) {
+                      print("Error ${error.toString()}");
+                    });
                   },
                   Colors.white,
                 ),
@@ -120,7 +115,7 @@ class _SignInScreenState extends State<SignInScreen> {
           textAlign: TextAlign.right,
         ),
         onPressed: () => Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen())),
+            context, MaterialPageRoute(builder: (context) => ResetPassword())),
       ),
     );
   }

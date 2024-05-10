@@ -1,8 +1,8 @@
-/*import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tasheh/screens/upload_screen.dart';
 import 'package:tasheh/reusable_widgets/reusable_widget.dart';
-
+//import 'package:tasheh/screens/home_screen.dart';
+import 'package:tasheh/screens/upload_screen.dart';
 
 class profile_screen extends StatelessWidget {
   const profile_screen({super.key});
@@ -39,25 +39,25 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 10),
                 itemProfile('Phone', '0795126556', CupertinoIcons.phone),
                 const SizedBox(height: 10),
-                itemProfile('Address', 'Amman , Jordan', CupertinoIcons.location),
+                itemProfile(
+                    'Address', 'Amman , Jordan', CupertinoIcons.location),
                 const SizedBox(height: 10),
-                itemProfile('Email', 'abdallah.ali.syaj@gmail.com', CupertinoIcons.mail),
-                const SizedBox(height: 20,),
+                itemProfile('Email', 'abdallah.ali.syaj@gmail.com',
+                    CupertinoIcons.mail),
+                const SizedBox(
+                  height: 20,
+                ),
                 SizedBox(
                   width: double.infinity,
-                  child: firebaseUIButton(context, 'Edit profile', () {} ,
-                      Color.fromRGBO(72, 6, 7, 1)
-                  ),
+                  child: firebaseUIButton(context, 'Edit profile', () {},
+                      Color.fromRGBO(72, 6, 7, 1)),
                 ),
-
                 SizedBox(
                   width: double.infinity,
                   child: firebaseUIButton(context, 'Add Event', () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => up_screen()));
-                  } ,
-                      Color.fromRGBO(72, 6, 7, 1)
-                  ),
+                  }, Color.fromRGBO(72, 6, 7, 1)),
                 )
               ],
             ),
@@ -77,10 +77,8 @@ class ProfileScreen extends StatelessWidget {
                 offset: Offset(0, 5),
                 color: Color.fromRGBO(72, 6, 7, 0.8),
                 spreadRadius: 2,
-                blurRadius: 10
-            )
-          ]
-      ),
+                blurRadius: 10)
+          ]),
       child: ListTile(
         title: Text(title),
         subtitle: Text(subtitle),
@@ -90,4 +88,4 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
-}*/
+}

@@ -1,6 +1,5 @@
-/*import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
 import 'package:tasheh/screens/signin_screen.dart';
 
@@ -46,7 +45,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   radius: 136,
                   backgroundImage: AssetImage('assets/images/rest_pass.jpg'),
                 ),
-              // 2 - logoWidget("assets/images/bulb.png"),
+                // 2 - logoWidget("assets/images/bulb.png"),
                 const SizedBox(
                   height: 40,
                 ),
@@ -56,40 +55,37 @@ class _ResetPasswordState extends State<ResetPassword> {
                   height: 20,
                 ),
                 firebaseUIButton(context, "Reset Password", () {
-
                   FirebaseAuth.instance
                       .sendPasswordResetEmail(email: _emailTextController.text)
-                  .then((value) {
-
-                  Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SignInScreen()));
-                  AwesomeDialog(
-                    context: context,
-                    dialogType: DialogType.success,
-                    animType: AnimType.topSlide,
-                    showCloseIcon: true,
-                    title: "SUCCESS , CHECK YOUR EMAIL",
-                    btnOkOnPress: (){},
-                  ).show();
+                      .then((value) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignInScreen()));
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.success,
+                      animType: AnimType.topSlide,
+                      showCloseIcon: true,
+                      title: "SUCCESS , CHECK YOUR EMAIL",
+                      btnOkOnPress: () {},
+                    ).show();
                   }).onError((error, stackTrace) {
-                  AwesomeDialog(
-                  context: context,
-                  dialogType: DialogType.error,
-                  animType: AnimType.topSlide,
-                  showCloseIcon: true,
-                  title: "invalid email",
-                  btnCancelOnPress: (){},
-                  btnOkOnPress: (){},
-                  ).show();
-                  print("Error ${error.toString()}");
-
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.error,
+                      animType: AnimType.topSlide,
+                      showCloseIcon: true,
+                      title: "invalid email",
+                      btnCancelOnPress: () {},
+                      btnOkOnPress: () {},
+                    ).show();
+                    print("Error ${error.toString()}");
                   });
-                },
-                    Colors.white)
+                }, Colors.white)
               ],
             ),
           ))),
     );
   }
 }
-*/

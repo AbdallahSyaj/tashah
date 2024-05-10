@@ -1,27 +1,23 @@
-/*import 'dart:typed_data';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tasheh/utils/color_utils.dart';
-
-import 'package:tasheh/utils/upload.dart';
 import 'package:tasheh/resources/image_store_methods.dart';
-
-
-
+import 'package:tasheh/utils/upload.dart';
 
 class up_screen extends StatefulWidget {
   const up_screen({super.key});
 
- /*
+  /*
  , required this.title
  final String title;
 */
+
   @override
   State<up_screen> createState() => _up_screenState();
 }
 
 class _up_screenState extends State<up_screen> {
-
   Uint8List? _file;
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -31,10 +27,8 @@ class _up_screenState extends State<up_screen> {
       _isLoading = true;
     });
     try {
-      String res = await ImageStoreMethods().uploadPost(
-          _descriptionController.text,
-          _file!
-      );
+      String res = await ImageStoreMethods()
+          .uploadPost(_descriptionController.text, _file!);
       if (res == 'success') {
         setState(() {
           _isLoading = false;
@@ -52,13 +46,11 @@ class _up_screenState extends State<up_screen> {
     }
   }
 
-  void clearImage(){
+  void clearImage() {
     setState(() {
       _file = null;
     });
   }
-
-
 
   _imageSelect(BuildContext context) async {
     return showDialog(
@@ -67,7 +59,6 @@ class _up_screenState extends State<up_screen> {
           return SimpleDialog(
             title: Text('Select Image'),
             children: [
-
               SimpleDialogOption(
                 padding: EdgeInsets.all(20),
                 child: Text('Take a Photo'),
@@ -81,7 +72,6 @@ class _up_screenState extends State<up_screen> {
                   });
                 },
               ),
-
               SimpleDialogOption(
                 padding: EdgeInsets.all(20),
                 child: Text('Choose From Gallery'),
@@ -95,7 +85,6 @@ class _up_screenState extends State<up_screen> {
                   });
                 },
               ),
-
               SimpleDialogOption(
                 padding: EdgeInsets.all(20),
                 child: Text('Cancel'),
@@ -103,18 +92,10 @@ class _up_screenState extends State<up_screen> {
                   Navigator.of(context).pop();
                 },
               ),
-
-
-
             ],
           );
         });
-
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -125,91 +106,83 @@ class _up_screenState extends State<up_screen> {
         elevation: 0,
         title: Text('Add Event'),
       ),
-      body:
-
-      _file == null ?
-      Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-
-        child: Center(
-          child: Column(
-            children: [
-              SizedBox(height: 220),
-              IconButton(
-                icon: const Icon(Icons.camera_alt,
-                  color: Color.fromRGBO(72, 6, 7, 1),
-                ),
-                onPressed: () => _imageSelect(context),
-                iconSize: 150,
-              ),
-              const Text(
-                'Add Event',
-                style: TextStyle(fontSize: 36.0 , color: Color.fromRGBO(72, 6, 7, 1)),
-              ),
-
-            ],
-          ),
-        ),
-      )
-          :
-
-      Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                _isLoading
-                    ? const LinearProgressIndicator()
-                    : const Padding(
-                  padding: EdgeInsets.only(
-                    top: 0,
-                  ),
-                ),
-
-                const Divider(),
-                SizedBox(
-                  height: 300,
-                  width: 300,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: MemoryImage(_file!),
-                        fit: BoxFit.fill,
-                        alignment: FractionalOffset.topCenter,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      body: _file == null
+          ? Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: Column(
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.20,
-                      child: TextField(
-                        controller: _descriptionController,
-                        decoration: const InputDecoration(
-                          hintText: 'Write a Description',
-                          border: InputBorder.none,
+                    SizedBox(height: 220),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.camera_alt,
+                        color: Color.fromRGBO(72, 6, 7, 1),
+                      ),
+                      onPressed: () => _imageSelect(context),
+                      iconSize: 150,
+                    ),
+                    const Text(
+                      'Add Event',
+                      style: TextStyle(
+                          fontSize: 36.0, color: Color.fromRGBO(72, 6, 7, 1)),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    children: [
+                      _isLoading
+                          ? const LinearProgressIndicator()
+                          : const Padding(
+                              padding: EdgeInsets.only(
+                                top: 0,
+                              ),
+                            ),
+                      const Divider(),
+                      SizedBox(
+                        height: 300,
+                        width: 300,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: MemoryImage(_file!),
+                              fit: BoxFit.fill,
+                              alignment: FractionalOffset.topCenter,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-
-                    ElevatedButton(onPressed: postImage, child: Text("Post"))
-                  ],
-                )
-              ],
+                      const Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: TextField(
+                              controller: _descriptionController,
+                              decoration: const InputDecoration(
+                                hintText: 'Write a Description',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          ElevatedButton(
+                              onPressed: postImage, child: Text("Post"))
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
-
     );
   }
-}*/
+}

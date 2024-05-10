@@ -1,6 +1,10 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasheh/screens/profile_screen.dart';
+
 //import 'profile_screen.dart';
 import '../reusable_widgets/reusable_widget.dart';
 import '../utils/color_utils.dart';
@@ -73,27 +77,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 firebaseUIButton(context, "Sign Up", () {
-                  /*FirebaseAuth.instance
+                  FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
                           email: _emailTextController.text,
                           password: _passwordTextController.text)
                       .then((value) {
                     print("Created New Account");
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => profile_screen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => profile_screen()));
                   }).onError((error, stackTrace) {
-                   AwesomeDialog(
-                     context: context,
-                     dialogType: DialogType.error,
-                     animType: AnimType.topSlide,
-                     showCloseIcon: true,
-                     title: "invalid email or password *password must 6 chars",
-                     btnCancelOnPress: (){},
-                     btnOkOnPress: (){},
-                   ).show();
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.error,
+                      animType: AnimType.topSlide,
+                      showCloseIcon: true,
+                      title: "invalid email or password *password must 6 chars",
+                      btnCancelOnPress: () {},
+                      btnOkOnPress: () {},
+                    ).show();
                     print("Error ${error.toString()}");
-
-                  });*/
+                  });
                 }, Colors.white),
               ],
             ),
