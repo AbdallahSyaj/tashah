@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tasheh/screens/Shop_Home.dart';
 import 'package:tasheh/screens/purchasefailed.dart';
 import 'package:tasheh/screens/purchasesuccess.dart';
-import 'package:tasheh/screens/shophome.dart';
 
 class Shop extends StatefulWidget {
   const Shop({super.key});
@@ -25,18 +25,16 @@ class _ShopState extends State<Shop> {
     setState(() {
       if (currentbalance - coupon1 >= 0) {
         currentbalance -= coupon1;
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => PurchaseSuccess()));
+        activescreen = 2;
       } else if (currentbalance - coupon1 < 0) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => PurchaseFailed()));
+        activescreen = 3;
       }
     });
   }
 
   @override
   Widget build(context) {
-    Widget screenwidget = Shop_Home();
+    Widget screenwidget = Shop_Page(switchScreen);
 
     if (activescreen == 2) {
       screenwidget = const PurchaseSuccess();

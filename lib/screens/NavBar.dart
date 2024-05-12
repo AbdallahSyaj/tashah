@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tasheh/screens/Shop_Home.dart';
 import 'package:tasheh/screens/events_page.dart';
 import 'package:tasheh/screens/profile_screen.dart';
-import 'package:tasheh/screens/shophome.dart';
 import 'package:tasheh/screens/upload_screen.dart';
 
 class NavBar extends StatefulWidget {
@@ -12,11 +12,12 @@ class NavBar extends StatefulWidget {
 }
 
 class _MyButtomNavBarState extends State<NavBar> {
+  var obj = CallBackClass();
   int myCurrentIndex = 0;
   List pages = const [
     Event_Page(),
     up_screen(),
-    Shop_Home(),
+    Shop_Page(CallBackClass),
     profile_screen(),
   ];
   @override
@@ -61,3 +62,5 @@ class _MyButtomNavBarState extends State<NavBar> {
     );
   }
 }
+
+void CallBackClass() {}
