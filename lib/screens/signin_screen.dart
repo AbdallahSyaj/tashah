@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // ignore_for_file: duplicate_import
 
 import 'package:flutter/material.dart';
-import 'package:tasheh/screens/events_page.dart';
+import 'package:tasheh/screens/NavBar.dart';
 import 'package:tasheh/screens/reset_password.dart';
 import 'package:tasheh/screens/signup_screen.dart';
 
@@ -61,7 +61,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             password: _passwordTextController.text)
                         .then((value) {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => EventPage()));
+                          MaterialPageRoute(builder: (context) => NavBar()));
                     }).onError((error, stackTrace) {
                       print("Error ${error.toString()}");
                     });
