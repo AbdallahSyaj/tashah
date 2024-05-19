@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tasheh/screens/Shop_Home.dart';
 import 'package:tasheh/screens/events_page.dart';
+import 'package:tasheh/screens/myeventspage.dart';
 import 'package:tasheh/screens/profile_screen.dart';
+import 'package:tasheh/screens/shop.dart';
 import 'package:tasheh/screens/upload_screen.dart';
+import 'package:tasheh/screens/uploadcoupon.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -15,17 +17,22 @@ class _MyButtomNavBarState extends State<NavBar> {
   var obj = CallBackClass();
   int myCurrentIndex = 0;
   List pages = const [
-    Event_Page(),
+    EventPage(),
     up_screen(),
-    Shop_Page(CallBackClass),
+    Shop(),
     profile_screen(),
+    MyEventPage(),
+    UploadCoupon(),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: false,
+      extendBody: true,
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        margin: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 20,
+        ),
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -50,11 +57,14 @@ class _MyButtomNavBarState extends State<NavBar> {
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.favorite), label: "Favorite"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.settings), label: "Setting"),
+                    icon: Icon(Icons.add), label: "Add Event"),
+                BottomNavigationBarItem(icon: Icon(Icons.shop), label: "Shop"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.person_outline), label: "Profile"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.event), label: "My Events"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.event), label: "add coupon"),
               ]),
         ),
       ),

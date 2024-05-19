@@ -1,84 +1,151 @@
+// ignore_for_file: must_call_super
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tasheh/reusable_widgets/reusable_widget.dart';
-//import 'package:tasheh/screens/home_screen.dart';
-import 'package:tasheh/screens/upload_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tasheh/screens/editprofilescreen.dart';
 
-class profile_screen extends StatelessWidget {
+class profile_screen extends StatefulWidget {
   const profile_screen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Profile',
-      home: const ProfileScreen(),
-    );
+  State<StatefulWidget> createState() {
+    return _ProfileScreen();
   }
 }
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+List<QueryDocumentSnapshot> data = [];
+
+class _ProfileScreen extends State<profile_screen> {
+  int i = data.length;
+  bool isloading = true;
+  getUserInfo() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where("Userid", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    data.addAll(querySnapshot.docs);
+    isloading = false;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getUserInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                CircleAvatar(
-                  radius: 70,
-                  backgroundImage: AssetImage('assets/images/prof_img.jpg'),
-                ),
-                const SizedBox(height: 20),
-                itemProfile('Name', 'Abdallah syaj', CupertinoIcons.person),
-                const SizedBox(height: 10),
-                itemProfile('Phone', '0795126556', CupertinoIcons.phone),
-                const SizedBox(height: 10),
-                itemProfile(
-                    'Address', 'Amman , Jordan', CupertinoIcons.location),
-                const SizedBox(height: 10),
-                itemProfile('Email', 'abdallah.ali.syaj@gmail.com',
-                    CupertinoIcons.mail),
-                const SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: firebaseUIButton(context, 'Edit profile', () {},
-                      Color.fromRGBO(72, 6, 7, 1)),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: firebaseUIButton(context, 'Add Event', () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => up_screen()));
-                  }, Color.fromRGBO(72, 6, 7, 1)),
-                )
-              ],
-            ),
+      appBar: AppBar(
+        title: Text(
+          'My Profile : ',
+          style: GoogleFonts.lato(
+            color: const Color.fromARGB(255, 226, 205, 255),
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 80, 0, 0),
       ),
+      body: isloading == true
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromARGB(255, 155, 155, 155),
+                    Color.fromARGB(255, 202, 202, 202)
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Container(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 50,
+                        ),
+                        const CircleAvatar(
+                          radius: 70,
+                          backgroundImage:
+                              AssetImage('assets/images/prof_img.jpg'),
+                        ),
+                        const SizedBox(height: 20),
+                        itemProfile('Name : ', '${data[i]['full name']}',
+                            CupertinoIcons.person),
+                        const SizedBox(height: 10),
+                        itemProfile('Phone : ', '0${data[i]['phone number']}',
+                            CupertinoIcons.phone),
+                        const SizedBox(height: 10),
+                        itemProfile('Address : ', '${data[i]['address']}',
+                            CupertinoIcons.location),
+                        const SizedBox(height: 10),
+                        itemProfile('Email: ', '${data[i]['Email']}',
+                            CupertinoIcons.mail),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 155, 75, 69),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => Edituserinfo(
+                                  docid: data[i]['Userid'],
+                                  oldname: data[i]['full name'],
+                                  address: data[i]['address'],
+                                  phonenumber: data[i]['phone number'],
+                                ),
+                              ));
+                            },
+                            child: const Text(
+                              'Edit Profile',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 100,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
     );
   }
 
-  itemProfile(String title, String subtitle, IconData iconData) {
+  Widget itemProfile(String title, String subtitle, IconData iconData) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(50),
-          boxShadow: [
-            BoxShadow(
-                offset: Offset(0, 5),
-                color: Color.fromRGBO(72, 6, 7, 0.8),
-                spreadRadius: 2,
-                blurRadius: 10)
-          ]),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 5),
+            color: Color.fromRGBO(72, 6, 7, 0.8),
+            spreadRadius: 2,
+            blurRadius: 10,
+          ),
+        ],
+      ),
       child: ListTile(
         title: Text(title),
         subtitle: Text(subtitle),

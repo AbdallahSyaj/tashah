@@ -1,9 +1,12 @@
 import 'dart:typed_data';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tasheh/resources/image_store_methods.dart';
 import 'package:tasheh/utils/upload.dart';
+import 'package:number_editing_controller/number_editing_controller.dart';
 
 class up_screen extends StatefulWidget {
   const up_screen({super.key});
@@ -19,7 +22,11 @@ class up_screen extends StatefulWidget {
 
 class _up_screenState extends State<up_screen> {
   Uint8List? _file;
+  final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final NumberEditingTextController _maxattendeesController =
+      NumberEditingTextController.integer();
 
   bool _isLoading = false;
   void postImage() async {
@@ -27,8 +34,13 @@ class _up_screenState extends State<up_screen> {
       _isLoading = true;
     });
     try {
-      String res = await ImageStoreMethods()
-          .uploadPost(_descriptionController.text, _file!);
+      String res = await ImageStoreMethods().uploadPost(
+        _titleController.text,
+        _descriptionController.text,
+        _locationController.text,
+        _maxattendeesController.number,
+        _file!,
+      );
       if (res == 'success') {
         setState(() {
           _isLoading = false;
@@ -102,22 +114,37 @@ class _up_screenState extends State<up_screen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(72, 6, 7, 1),
-        elevation: 0,
-        title: Text('Add Event'),
+        title: Text(
+          'Add Event',
+          style: GoogleFonts.lato(
+            color: const Color.fromARGB(255, 226, 205, 255),
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 80, 0, 0),
       ),
       body: _file == null
           ? Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromARGB(255, 155, 155, 155),
+                    Color.fromARGB(255, 202, 202, 202),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 260),
               child: Center(
                 child: Column(
                   children: [
-                    SizedBox(height: 220),
                     IconButton(
                       icon: const Icon(
                         Icons.camera_alt,
-                        color: Color.fromRGBO(72, 6, 7, 1),
+                        color: Color.fromRGBO(170, 50, 50, 0.514),
                       ),
                       onPressed: () => _imageSelect(context),
                       iconSize: 150,
@@ -125,13 +152,15 @@ class _up_screenState extends State<up_screen> {
                     const Text(
                       'Add Event',
                       style: TextStyle(
-                          fontSize: 36.0, color: Color.fromRGBO(72, 6, 7, 1)),
+                          fontSize: 30.0,
+                          color: Color.fromRGBO(170, 50, 50, 0.514),
+                          fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
               ),
             )
-          : Container(
+          : SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: SingleChildScrollView(
@@ -160,22 +189,48 @@ class _up_screenState extends State<up_screen> {
                         ),
                       ),
                       const Divider(),
-                      Row(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.20,
+                            //width: MediaQuery.of(context).size.width * 0.20,
+                            child: TextField(
+                              controller: _titleController,
+                              decoration: const InputDecoration(
+                                hintText: 'Write a Title : ',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          Container(
                             child: TextField(
                               controller: _descriptionController,
                               decoration: const InputDecoration(
-                                hintText: 'Write a Description',
+                                hintText: 'Write a description : ',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: TextField(
+                              controller: _locationController,
+                              decoration: const InputDecoration(
+                                hintText: 'Write Location : (State , City) ',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: TextField(
+                              controller: _maxattendeesController,
+                              decoration: const InputDecoration(
+                                hintText: 'Maximum Number of Attendees',
                                 border: InputBorder.none,
                               ),
                             ),
                           ),
                           ElevatedButton(
-                              onPressed: postImage, child: Text("Post"))
+                              onPressed: postImage, child: const Text("Post"))
                         ],
                       )
                     ],

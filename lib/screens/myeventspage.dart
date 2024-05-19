@@ -1,16 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tasheh/screens/viewsingleevent.dart';
 
-class EventPage extends StatefulWidget {
-  const EventPage({super.key});
+class MyEventPage extends StatefulWidget {
+  const MyEventPage({super.key});
 
   @override
-  State<EventPage> createState() => _EventPageState();
+  State<MyEventPage> createState() => _MyEventPage();
 }
 
-class _EventPageState extends State<EventPage> {
+class _MyEventPage extends State<MyEventPage> {
   @override
   Widget build(BuildContext context) {
     Widget EventBox = SingleChildScrollView(
@@ -54,7 +53,7 @@ class _EventPageState extends State<EventPage> {
                         child: Image.network(
                           data['postUrl'],
                           cacheHeight: 150,
-                          cacheWidth: 200,
+                          cacheWidth: 150,
                         ),
                       ),
                       const SizedBox(
@@ -81,14 +80,7 @@ class _EventPageState extends State<EventPage> {
                         height: 10,
                       ),
                       OutlinedButton(
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SingleEventPage(
-                              postId: data['postId'],
-                            ),
-                          ),
-                        ),
+                        onPressed: () {},
                         child: const Text('View'),
                       ),
                       const SizedBox(

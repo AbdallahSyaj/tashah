@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tasheh/screens/post.dart';
 import 'package:uuid/uuid.dart';
@@ -19,16 +20,22 @@ class ImageStoreMethods {
     return downloadUrl;
   }
 
-  Future<String> uploadPost(String description, Uint8List file) async {
+  Future<String> uploadPost(String title, String description, String location,
+      dynamic maxattendees, Uint8List file) async {
     String res = 'Some Error Occurred';
     try {
       String photoUrl = await imageToStorage(file);
       String postId = const Uuid().v1();
+
       Post post = Post(
         description: description,
         postId: postId,
         datePublished: DateTime.now(),
         postUrl: photoUrl,
+        title: title,
+        location: location,
+        maxattendees: maxattendees,
+        Userid:  FirebaseAuth.instance.currentUser!.uid,
       );
       _firestore.collection('posts').doc(postId).set(
             post.toJson(),

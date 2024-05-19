@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // ignore_for_file: duplicate_import
 
@@ -17,8 +18,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  TextEditingController _passwordTextController = TextEditingController();
-  TextEditingController _emailTextController = TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController();
+  final TextEditingController _emailTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +64,15 @@ class _SignInScreenState extends State<SignInScreen> {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => NavBar()));
                     }).onError((error, stackTrace) {
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.error,
+                        animType: AnimType.topSlide,
+                        showCloseIcon: true,
+                        title: "invalid email or password",
+                        btnCancelOnPress: () {},
+                        btnOkOnPress: () {},
+                      ).show();
                       print("Error ${error.toString()}");
                     });
                   },
