@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // ignore_for_file: duplicate_import
 
@@ -34,14 +33,14 @@ class _SignInScreenState extends State<SignInScreen> {
         ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(20, 100, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 100, 20, 0),
             child: Column(
               children: <Widget>[
                 logoWidget("assets/images/logo1.png"),
                 const SizedBox(
                   height: 26,
                 ),
-                reusableTextField("Enter UserName", Icons.person_outline, false,
+                reusableTextField("Enter Email", Icons.person_outline, false,
                     _emailTextController),
                 const SizedBox(
                   height: 18,
@@ -61,24 +60,17 @@ class _SignInScreenState extends State<SignInScreen> {
                             email: _emailTextController.text,
                             password: _passwordTextController.text)
                         .then((value) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => NavBar()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const NavBar()));
                     }).onError((error, stackTrace) {
-                      AwesomeDialog(
-                        context: context,
-                        dialogType: DialogType.error,
-                        animType: AnimType.topSlide,
-                        showCloseIcon: true,
-                        title: "invalid email or password",
-                        btnCancelOnPress: () {},
-                        btnOkOnPress: () {},
-                      ).show();
                       print("Error ${error.toString()}");
                     });
                   },
                   Colors.white,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 signUpOption(),
@@ -102,7 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
         GestureDetector(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SignUpScreen()));
+                MaterialPageRoute(builder: (context) => const SignUpScreen()));
           },
           child: const Text(
             " Sign Up",
@@ -124,8 +116,8 @@ class _SignInScreenState extends State<SignInScreen> {
           style: TextStyle(color: Colors.white70),
           textAlign: TextAlign.right,
         ),
-        onPressed: () => Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ResetPassword())),
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ResetPassword())),
       ),
     );
   }

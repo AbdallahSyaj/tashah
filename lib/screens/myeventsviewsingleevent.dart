@@ -1,82 +1,48 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'editeventpage.dart';
 
-class SingleEventPage extends StatefulWidget {
+class SingleEventPage1 extends StatefulWidget {
   final String postId;
-  const SingleEventPage({Key? key, required this.postId});
+  const SingleEventPage1({Key? key, required this.postId});
 
   @override
-  State<SingleEventPage> createState() => _SingleEventPageState();
+  State<SingleEventPage1> createState() => _SingleEventPageState();
 }
 
-class _SingleEventPageState extends State<SingleEventPage> {
-  DocumentSnapshot? postData;
-  DocumentSnapshot? postData2; // Nullable DocumentSnapshot
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+class _SingleEventPageState extends State<SingleEventPage1> {
+  DocumentSnapshot? postData; // Nullable DocumentSnapshot
 
-  // DocumentSnapshot? userData;
-  // void getUserInfp() async {
-  //   DocumentSnapshot querySnapshot1 = await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .get();
-  //   setState(() {
-  //     userData = querySnapshot1;
-  //   });
+  // Future<void> updateUsersBalance(List<String> userIds) async {
+  //   // Initialize Firestore instance
+  //   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  //   // Fetch the event points from Firestore (assuming there's a single document storing event points)
+  //   num eventPoints = postData!['eventpoints'];
+
+  //   // Batch write to perform multiple updates in a single request
+
+  //   for (String userId in postData!['attendeeslistid']) {
+  //     // Reference to the user document
+
+  //     FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(userId)
+  //         .snapshots()
+  //         .map((snapshot) => snapshot.data()?['balance'] ?? 0);
+
+  //     FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(userId)
+  //         .update({'balance': eventPoints}).then((_) {
+  //       setState(() {});
+  //     });
+
+  //     // Update the balance field in Firestore
+  //   }
   // }
-  void getUserInf() async {
-    DocumentSnapshot querySnapshot1 = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    setState(() {
-      postData2 = querySnapshot1;
-    });
-  }
-
-  Future<void> addUserIdToList(
-      String collection, String docId, String listField) async {
-    try {
-      // Get the current user
-      User? currentUser = _auth.currentUser;
-
-      if (currentUser != null) {
-        String userId = FirebaseAuth.instance.currentUser!.uid;
-        num counter = postData!['currentnumber'];
-        num max = postData!['maxattendees'];
-        // String username = postData2!['full name'];
-        if (counter < max) {
-          DocumentReference docRef =
-              _firestore.collection('posts').doc(widget.postId);
-
-          // Add the userId to the list field
-          await docRef.update({
-            'attendeeslistid': FieldValue.arrayUnion([userId]),
-            'currentnumber': counter += 1,
-            // 'attendeeslistnames': FieldValue.arrayUnion([username]),
-          });
-
-          print("Added UserId: $userId to list");
-        } else {
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.error,
-            title: 'Falied to Join',
-            desc: 'Maximum Number of Attendees reached',
-          );
-          //return SnackBar(content: content)
-        }
-      } else {
-        print("No user is signed in.");
-      }
-    } catch (e) {
-      print("Error adding UserId to list: $e");
-    }
-  }
 
   @override
   void initState() {
@@ -92,6 +58,16 @@ class _SingleEventPageState extends State<SingleEventPage> {
     setState(() {
       postData = querySnapshot;
     });
+  }
+
+  finishevent() async {
+    bool finsihed = true;
+    await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(widget.postId)
+        .update({'isfinished': finsihed});
+    // updateUsersBalance;
+    setState(() {});
   }
 
   @override
@@ -122,7 +98,7 @@ class _SingleEventPageState extends State<SingleEventPage> {
           ),
         ),
         child: postData != null
-            ? Container(
+            ? SizedBox(
                 height: 800,
                 width: 415,
                 child: Center(
@@ -228,15 +204,14 @@ class _SingleEventPageState extends State<SingleEventPage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                            'Date : ${postData!['time']}',
+                        Text('Date : ${postData!['time']}',
                             style: GoogleFonts.lato(
                               color: Colors.black,
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center),
-                            const SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Text(
@@ -269,16 +244,86 @@ class _SingleEventPageState extends State<SingleEventPage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        OutlinedButton(
-                          onPressed: () {
-                            addUserIdToList('posts', widget.postId,
-                                FirebaseAuth.instance.currentUser!.uid);
-                          },
-                          child: const Text('Enroll',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.black)),
+                        Text(
+                            'Is this event fisnihed ? : ${postData!['isfinished']}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Color.fromARGB(255, 0, 0, 0))),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            OutlinedButton(
+                              onPressed: () {
+                                AwesomeDialog(
+                                  context: context,
+                                  dialogType: DialogType.warning,
+                                  animType: AnimType.rightSlide,
+                                  title: 'Warning',
+                                  desc: 'Delete this Event ?',
+                                  descTextStyle: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                  titleTextStyle: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                  btnCancelOnPress: () {
+                                    print('cancel');
+                                  },
+                                  btnOkOnPress: () async {
+                                    await FirebaseFirestore.instance
+                                        .collection('posts')
+                                        .doc(widget.postId)
+                                        .delete();
+                                    Navigator.of(context)
+                                        .pop('SingleEventPage1');
+                                  },
+                                ).show();
+                              },
+                              child: const Text('Remove',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.black)),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditEvemtinfo(
+                                      postId: widget.postId,
+                                      oldtitle: postData!['title'],
+                                      olddescription: postData!['description'],
+                                      oldlocation: postData!['location'],
+                                      oldmaxattendees:
+                                          postData!['maxattendees'],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Text('Edit',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.black)),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            OutlinedButton(
+                              onPressed: finishevent,
+                              child: const Text('Finish',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.black)),
+                            ),
+                          ],
                         )
                       ],
                     ),

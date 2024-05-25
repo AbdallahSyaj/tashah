@@ -66,12 +66,37 @@ class _EventView extends State<EventView> {
                           const SizedBox(
                             height: 10,
                           ),
+                          Text(data['time']),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Text(data['location']),
                           const SizedBox(
                             height: 10,
                           ),
                           Text(
+                              'Current Number of Attendees : ${data['currentnumber']}',
+                              style: GoogleFonts.lato(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
                               'Max Number of Attendees : ${data['maxattendees']}'),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text('Sponsored By : ${data['sponsorname']}',
+                              style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center),
                           const SizedBox(
                             height: 10,
                           ),

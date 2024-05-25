@@ -3,14 +3,17 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:tasheh/screens/post.dart';
 import 'package:uuid/uuid.dart';
 
 class ImageStoreMethods {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
 
   Future<String> imageToStorage(Uint8List file) async {
+    
     String id = const Uuid().v1();
     Reference ref = _storage.ref().child('posts').child(id);
 
@@ -31,11 +34,13 @@ class ImageStoreMethods {
         description: description,
         postId: postId,
         datePublished: DateTime.now(),
+        datetime: DateTime(2024, 5, 25, 12),
         postUrl: photoUrl,
         title: title,
         location: location,
         maxattendees: maxattendees,
-        Userid:  FirebaseAuth.instance.currentUser!.uid,
+        Userid: FirebaseAuth.instance.currentUser!.uid,
+        
       );
       _firestore.collection('posts').doc(postId).set(
             post.toJson(),

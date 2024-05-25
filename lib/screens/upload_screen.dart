@@ -65,48 +65,52 @@ class _up_screenState extends State<up_screen> {
   }
 
   _imageSelect(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text('Select Image'),
-            children: [
-              SimpleDialogOption(
-                padding: EdgeInsets.all(20),
-                child: Text('Take a Photo'),
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  Uint8List file = await pickImage(
-                    ImageSource.camera,
-                  );
-                  setState(() {
-                    _file = file;
-                  });
-                },
-              ),
-              SimpleDialogOption(
-                padding: EdgeInsets.all(20),
-                child: Text('Choose From Gallery'),
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  Uint8List file = await pickImage(
-                    ImageSource.gallery,
-                  );
-                  setState(() {
-                    _file = file;
-                  });
-                },
-              ),
-              SimpleDialogOption(
-                padding: EdgeInsets.all(20),
-                child: Text('Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
+    return _isLoading == true
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : showDialog(
+            context: context,
+            builder: (context) {
+              return SimpleDialog(
+                title: Text('Select Image'),
+                children: [
+                  SimpleDialogOption(
+                    padding: EdgeInsets.all(20),
+                    child: Text('Take a Photo'),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      Uint8List file = await pickImage(
+                        ImageSource.camera,
+                      );
+                      setState(() {
+                        _file = file;
+                      });
+                    },
+                  ),
+                  SimpleDialogOption(
+                    padding: EdgeInsets.all(20),
+                    child: Text('Choose From Gallery'),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      Uint8List file = await pickImage(
+                        ImageSource.gallery,
+                      );
+                      setState(() {
+                        _file = file;
+                      });
+                    },
+                  ),
+                  SimpleDialogOption(
+                    padding: EdgeInsets.all(20),
+                    child: Text('Cancel'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
   }
 
   @override

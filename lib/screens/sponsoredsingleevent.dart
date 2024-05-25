@@ -4,41 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SingleEventPage extends StatefulWidget {
+class SponsoredEventPage1 extends StatefulWidget {
   final String postId;
-  const SingleEventPage({Key? key, required this.postId});
+  const SponsoredEventPage1({Key? key, required this.postId});
 
   @override
-  State<SingleEventPage> createState() => _SingleEventPageState();
+  State<SponsoredEventPage1> createState() => _SponsoredEventPageState();
 }
 
-class _SingleEventPageState extends State<SingleEventPage> {
-  DocumentSnapshot? postData;
-  DocumentSnapshot? postData2; // Nullable DocumentSnapshot
+class _SponsoredEventPageState extends State<SponsoredEventPage1> {
+  DocumentSnapshot? postData; // Nullable DocumentSnapshot
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  // DocumentSnapshot? userData;
-  // void getUserInfp() async {
-  //   DocumentSnapshot querySnapshot1 = await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .get();
-  //   setState(() {
-  //     userData = querySnapshot1;
-  //   });
-  // }
-  void getUserInf() async {
-    DocumentSnapshot querySnapshot1 = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    setState(() {
-      postData2 = querySnapshot1;
-    });
-  }
-
-  Future<void> addUserIdToList(
+  Future<void> removeUserIdToList(
       String collection, String docId, String listField) async {
     try {
       // Get the current user
@@ -46,30 +24,19 @@ class _SingleEventPageState extends State<SingleEventPage> {
 
       if (currentUser != null) {
         String userId = FirebaseAuth.instance.currentUser!.uid;
-        num counter = postData!['currentnumber'];
-        num max = postData!['maxattendees'];
-        // String username = postData2!['full name'];
-        if (counter < max) {
-          DocumentReference docRef =
-              _firestore.collection('posts').doc(widget.postId);
 
-          // Add the userId to the list field
-          await docRef.update({
-            'attendeeslistid': FieldValue.arrayUnion([userId]),
-            'currentnumber': counter += 1,
-            // 'attendeeslistnames': FieldValue.arrayUnion([username]),
-          });
+        DocumentReference docRef =
+            _firestore.collection('posts').doc(widget.postId);
 
-          print("Added UserId: $userId to list");
-        } else {
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.error,
-            title: 'Falied to Join',
-            desc: 'Maximum Number of Attendees reached',
-          );
-          //return SnackBar(content: content)
-        }
+        // Add the userId to the list field
+        String nosponsorid = 'null';
+        String nosponsorlabel = 'Not Sponsored';
+        await docRef.update({
+          'sponsorid': nosponsorid,
+          'sponsorname': nosponsorlabel,
+        });
+
+        print("Added UserId: $userId to list");
       } else {
         print("No user is signed in.");
       }
@@ -122,7 +89,7 @@ class _SingleEventPageState extends State<SingleEventPage> {
           ),
         ),
         child: postData != null
-            ? Container(
+            ? SizedBox(
                 height: 800,
                 width: 415,
                 child: Center(
@@ -228,15 +195,14 @@ class _SingleEventPageState extends State<SingleEventPage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                            'Date : ${postData!['time']}',
+                        Text('Date : ${postData!['time']}',
                             style: GoogleFonts.lato(
                               color: Colors.black,
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center),
-                            const SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Text(
@@ -269,16 +235,46 @@ class _SingleEventPageState extends State<SingleEventPage> {
                         const SizedBox(
                           height: 10,
                         ),
+                        Text(
+                            'Is this event fisnihed ? : ${postData!['isfinished']}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Color.fromARGB(255, 0, 0, 0))),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         OutlinedButton(
                           onPressed: () {
-                            addUserIdToList('posts', widget.postId,
-                                FirebaseAuth.instance.currentUser!.uid);
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.warning,
+                              animType: AnimType.rightSlide,
+                              title: 'Warning',
+                              desc: 'Unsponsor this Event ?',
+                              descTextStyle:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                              titleTextStyle:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                              btnCancelOnPress: () {
+                                print('cancel');
+                              },
+                              btnOkOnPress: () async {
+                                Navigator.of(context).pop('MyEventPage');
+
+                                await removeUserIdToList('posts', widget.postId,
+                                    FirebaseAuth.instance.currentUser!.uid);
+                              },
+                            ).show();
                           },
-                          child: const Text('Enroll',
+                          child: const Text('Unsponsor',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
                                   color: Colors.black)),
+                        ),
+                        const SizedBox(
+                          width: 20,
                         )
                       ],
                     ),

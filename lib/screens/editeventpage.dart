@@ -7,52 +7,102 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:number_editing_controller/number_editing_controller.dart';
 
-class Edituserinfo extends StatefulWidget {
-  const Edituserinfo(
-      {super.key,
-      required this.docid,
-      required this.oldname,
-      required this.address,
-      required this.phonenumber});
-  final String docid;
-  final String oldname;
-  final String address;
-  final num phonenumber;
+class EditEvemtinfo extends StatefulWidget {
+  final String postId;
+
+  const EditEvemtinfo({
+    super.key,
+    required this.postId,
+    required this.oldtitle,
+    required this.olddescription,
+    required this.oldlocation,
+    required this.oldmaxattendees,
+  });
+
+  final String oldtitle;
+  final String olddescription;
+  final String oldlocation;
+  final num oldmaxattendees;
 
   @override
-  State<StatefulWidget> createState() => _Edituserinfo();
+  State<StatefulWidget> createState() => _EditEventinfo();
 }
 
-class _Edituserinfo extends State<Edituserinfo> {
+DocumentSnapshot? postData1;
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
+class _EditEventinfo extends State<EditEvemtinfo> {
   bool isloading = true;
   GlobalKey<FormState> formState = GlobalKey<FormState>();
-  TextEditingController fullName = TextEditingController();
-  TextEditingController address = TextEditingController();
-  NumberEditingTextController phoneNumber =
+  TextEditingController title = TextEditingController();
+  TextEditingController description = TextEditingController();
+  TextEditingController location = TextEditingController();
+  NumberEditingTextController maxattendees =
       NumberEditingTextController.integer();
-  NumberEditingTextController balance = NumberEditingTextController.integer();
 
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+  void getUserInf() async {
+    DocumentSnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    setState(() {
+      postData1 = querySnapshot;
+    });
+  }
+
+  Future<void> addhostinfo(
+      String collection, String docId, String listField) async {
+    try {
+      // Get the current user
+      User? currentUser = _auth.currentUser;
+
+      if (currentUser != null) {
+        String userId = FirebaseAuth.instance.currentUser!.uid;
+
+        DocumentReference docRef =
+            _firestore.collection('posts').doc(widget.postId);
+
+        // Add the userId to the list field
+        await docRef.update({
+          'hostnubmer': postData1!['phone number'],
+          'hostname': postData1!['full name'],
+
+          // 'attendeeslistname': FieldValue.arrayUnion([userData!['full name']])
+        });
+
+        print("Added UserId: $userId to list");
+      } else {
+        print("No user is signed in. or event is already Sponsored");
+      }
+    } catch (e) {
+      print("Error adding UserId to list: $e");
+    }
+  }
 
   edituserinfo() async {
-    String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
-    users.doc(uid).update({
-      'full name': fullName.text,
-      'address': address.text,
-      'phone number': phoneNumber.number,
+    addhostinfo('posts', widget.postId, FirebaseAuth.instance.currentUser!.uid);
+    posts.doc(widget.postId).update({
+      'title': title.text,
+      'description': description.text,
+      'location': location.text,
+      'maxattendees': maxattendees.number,
     });
 
     isloading = false;
     setState(() {});
-    Navigator.of(context).pop('profile_screen');
+    Navigator.of(context).pop('SingleEventPage1');
   }
 
   @override
   void initState() {
     super.initState();
-    fullName.text = widget.oldname;
-    address.text = widget.address;
-    phoneNumber.number = widget.phonenumber;
+    title.text = widget.oldtitle;
+    description.text = widget.olddescription;
+    location.text = widget.oldlocation;
+    maxattendees.number = widget.oldmaxattendees;
+    getUserInf;
   }
 
   @override
@@ -60,7 +110,7 @@ class _Edituserinfo extends State<Edituserinfo> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Edit User Info',
+          'Edit Event Info',
           style: GoogleFonts.lato(
             color: const Color.fromARGB(255, 226, 205, 255),
             fontSize: 24,
@@ -89,14 +139,14 @@ class _Edituserinfo extends State<Edituserinfo> {
                 height: 25,
               ),
               const Text(
-                'Edit Full Name  :',
+                'Edit Event Title :',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 5,
               ),
               TextField(
-                controller: fullName,
+                controller: title,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
@@ -104,21 +154,21 @@ class _Edituserinfo extends State<Edituserinfo> {
                   contentPadding: const EdgeInsets.all(10),
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: 'Full Name  :',
+                  hintText: 'Event Title  :',
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
               const Text(
-                'Edit Address :',
+                'Edit Event description :',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 5,
               ),
               TextField(
-                controller: address,
+                controller: description,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
@@ -126,21 +176,21 @@ class _Edituserinfo extends State<Edituserinfo> {
                   contentPadding: const EdgeInsets.all(10),
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: 'Address :',
+                  hintText: 'Event description  :',
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
               const Text(
-                'Edit Phone Number :',
+                'Edit Location :',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 5,
               ),
               TextField(
-                controller: phoneNumber,
+                controller: location,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
@@ -148,7 +198,29 @@ class _Edituserinfo extends State<Edituserinfo> {
                   contentPadding: const EdgeInsets.all(10),
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: 'Phone Number :+962',
+                  hintText: 'Location :',
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text(
+                'Edit Max Number of Attendees :',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              TextField(
+                controller: maxattendees,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  contentPadding: const EdgeInsets.all(10),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Max Number of Attendees',
                 ),
               ),
               const SizedBox(
@@ -158,7 +230,7 @@ class _Edituserinfo extends State<Edituserinfo> {
                 style: OutlinedButton.styleFrom(backgroundColor: Colors.white),
                 onPressed: edituserinfo,
                 child: const Text(
-                  'Edit',
+                  'Save',
                   style: TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
                       fontWeight: FontWeight.bold),

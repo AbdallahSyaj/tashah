@@ -1,96 +1,33 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'myeventspage.dart';
 
-class SingleEventPage extends StatefulWidget {
-  final String postId;
-  const SingleEventPage({Key? key, required this.postId});
+class SingleCouponPage extends StatefulWidget {
+  final String couponId;
+  const SingleCouponPage({Key? key, required this.couponId});
 
   @override
-  State<SingleEventPage> createState() => _SingleEventPageState();
+  State<SingleCouponPage> createState() => _SingleEventPageState();
 }
 
-class _SingleEventPageState extends State<SingleEventPage> {
-  DocumentSnapshot? postData;
-  DocumentSnapshot? postData2; // Nullable DocumentSnapshot
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  // DocumentSnapshot? userData;
-  // void getUserInfp() async {
-  //   DocumentSnapshot querySnapshot1 = await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .get();
-  //   setState(() {
-  //     userData = querySnapshot1;
-  //   });
-  // }
-  void getUserInf() async {
-    DocumentSnapshot querySnapshot1 = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    setState(() {
-      postData2 = querySnapshot1;
-    });
-  }
-
-  Future<void> addUserIdToList(
-      String collection, String docId, String listField) async {
-    try {
-      // Get the current user
-      User? currentUser = _auth.currentUser;
-
-      if (currentUser != null) {
-        String userId = FirebaseAuth.instance.currentUser!.uid;
-        num counter = postData!['currentnumber'];
-        num max = postData!['maxattendees'];
-        // String username = postData2!['full name'];
-        if (counter < max) {
-          DocumentReference docRef =
-              _firestore.collection('posts').doc(widget.postId);
-
-          // Add the userId to the list field
-          await docRef.update({
-            'attendeeslistid': FieldValue.arrayUnion([userId]),
-            'currentnumber': counter += 1,
-            // 'attendeeslistnames': FieldValue.arrayUnion([username]),
-          });
-
-          print("Added UserId: $userId to list");
-        } else {
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.error,
-            title: 'Falied to Join',
-            desc: 'Maximum Number of Attendees reached',
-          );
-          //return SnackBar(content: content)
-        }
-      } else {
-        print("No user is signed in.");
-      }
-    } catch (e) {
-      print("Error adding UserId to list: $e");
-    }
-  }
+class _SingleEventPageState extends State<SingleCouponPage> {
+  DocumentSnapshot? couponData; // Nullable DocumentSnapshot
 
   @override
   void initState() {
     super.initState();
-    getSingleEvent();
+    getSingleCoupon();
   }
 
-  void getSingleEvent() async {
+  void getSingleCoupon() async {
     DocumentSnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('posts')
-        .doc(widget.postId)
+        .collection('coupon')
+        .doc(widget.couponId)
         .get();
     setState(() {
-      postData = querySnapshot;
+      couponData = querySnapshot;
     });
   }
 
@@ -99,7 +36,7 @@ class _SingleEventPageState extends State<SingleEventPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Event Details',
+          'Coupon Details',
           style: GoogleFonts.lato(
             color: const Color.fromARGB(255, 226, 205, 255),
             fontSize: 24,
@@ -121,8 +58,8 @@ class _SingleEventPageState extends State<SingleEventPage> {
             end: Alignment.bottomRight,
           ),
         ),
-        child: postData != null
-            ? Container(
+        child: couponData != null
+            ? SizedBox(
                 height: 800,
                 width: 415,
                 child: Center(
@@ -138,8 +75,8 @@ class _SingleEventPageState extends State<SingleEventPage> {
                           ),
                           child: Container(
                             padding: const EdgeInsets.all(10),
-                            child: Image.network(
-                              postData!['postUrl'],
+                            child: Image.asset(
+                              'assets/images/copoun.jpg',
                               cacheHeight: 300,
                               cacheWidth: 300,
                             ),
@@ -161,7 +98,7 @@ class _SingleEventPageState extends State<SingleEventPage> {
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             child: Text(
-                              postData!['title'],
+                              couponData!['title'],
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 30,
@@ -172,7 +109,7 @@ class _SingleEventPageState extends State<SingleEventPage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        const Text('Description : ',
+                        const Text('Price : ',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,
@@ -183,11 +120,11 @@ class _SingleEventPageState extends State<SingleEventPage> {
                         Card(
                           color: const Color.fromARGB(167, 255, 95, 95),
                           child: Container(
-                            width: 250,
+                            width: 50,
                             padding: const EdgeInsets.all(10),
                             child: Center(
                               child: Text(
-                                postData!['description'],
+                                couponData!['price'],
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -214,7 +151,7 @@ class _SingleEventPageState extends State<SingleEventPage> {
                                 padding: const EdgeInsets.all(10),
                                 child: Center(
                                   child: Text(
-                                    postData!['location'],
+                                    couponData!['location'],
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15,
@@ -228,57 +165,74 @@ class _SingleEventPageState extends State<SingleEventPage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                            'Date : ${postData!['time']}',
-                            style: GoogleFonts.lato(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            OutlinedButton(
+                              onPressed: () {
+                                AwesomeDialog(
+                                  context: context,
+                                  dialogType: DialogType.warning,
+                                  animType: AnimType.rightSlide,
+                                  title: 'Warning',
+                                  desc: 'Delete this Coupon ?',
+                                  descTextStyle: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                  titleTextStyle: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                  btnCancelOnPress: () {
+                                    print('cancel');
+                                  },
+                                  btnOkOnPress: () async {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MyEventPage(),
+                                      ),
+                                    );
+                                    await FirebaseFirestore.instance
+                                        .collection('coupon')
+                                        .doc(widget.couponId)
+                                        .delete();
+                                  },
+                                ).show();
+                              },
+                              child: const Text('Remove',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.black)),
                             ),
-                            textAlign: TextAlign.center),
-                            const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                            'Current Number of Attendees : ${postData!['currentnumber']}',
-                            style: GoogleFonts.lato(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                            'Max Number of Attendees : ${postData!['maxattendees']}',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                                color: Color.fromARGB(255, 0, 0, 0))),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text('Sponsored By : ${postData!['sponsorname']}',
-                            style: GoogleFonts.lato(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        OutlinedButton(
-                          onPressed: () {
-                            addUserIdToList('posts', widget.postId,
-                                FirebaseAuth.instance.currentUser!.uid);
-                          },
-                          child: const Text('Enroll',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.black)),
+                            // const SizedBox(
+                            //   width: 20,
+                            // ),
+                            // OutlinedButton(
+                            //   onPressed: () {
+                            //     Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //         builder: (context) => EditEvemtinfo(
+                            //           couponId: widget.couponId,
+                            //           oldtitle: couponData!['title'],
+                            //           olddescription: couponData!['description'],
+                            //           oldlocation: couponData!['location'],
+                            //           oldmaxattendees:
+                            //               couponData!['maxattendees'],
+                            //         ),
+                            //       ),
+                            //     );
+                            //   },
+                            //   child: const Text('Edit',
+                            //       style: TextStyle(
+                            //           fontWeight: FontWeight.bold,
+                            //           fontSize: 15,
+                            //           color: Colors.black)),
+                            // ),
+                            // const SizedBox(
+                            //   width: 20,
+                            // ),
+                          ],
                         )
                       ],
                     ),
